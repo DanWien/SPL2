@@ -1,0 +1,117 @@
+[2022-12-13 14:09:40] [INFO   ] cannot read configuration file config.properties trying from resources.
+[2022-12-13 14:09:40] [INFO   ] configuration file was loaded from resources directory.
+[2022-12-13 14:09:41] [INFO   ] Thread dealer starting.
+[2022-12-13 14:09:41] [INFO   ] Thread player0starting.
+[2022-12-13 14:09:41] [INFO   ] Thread player1starting.
+[2022-12-13 14:09:41] [SEVERE ] placing card 61 in slot 7
+[2022-12-13 14:09:41] [SEVERE ] placing card 76 in slot 10
+[2022-12-13 14:09:41] [SEVERE ] placing card 13 in slot 11
+[2022-12-13 14:09:41] [SEVERE ] placing card 64 in slot 8
+[2022-12-13 14:09:41] [SEVERE ] placing card 22 in slot 6
+[2022-12-13 14:09:42] [SEVERE ] placing card 18 in slot 9
+[2022-12-13 14:09:42] [SEVERE ] placing card 37 in slot 0
+[2022-12-13 14:09:42] [SEVERE ] placing card 77 in slot 4
+[2022-12-13 14:09:42] [SEVERE ] placing card 49 in slot 5
+[2022-12-13 14:09:42] [SEVERE ] placing card 25 in slot 2
+[2022-12-13 14:09:42] [SEVERE ] placing card 30 in slot 1
+[2022-12-13 14:09:42] [SEVERE ] placing card 68 in slot 3
+[2022-12-13 14:09:44] [SEVERE ] Key 90 was pressed by player 0
+[2022-12-13 14:09:44] [SEVERE ] player 0 placing token on slot 8
+[2022-12-13 14:09:45] [SEVERE ] Key 88 was pressed by player 0
+[2022-12-13 14:09:45] [SEVERE ] player 0 placing token on slot 9
+[2022-12-13 14:09:46] [SEVERE ] Key 67 was pressed by player 0
+[2022-12-13 14:09:46] [SEVERE ] player 0 placing token on slot 10
+[2022-12-13 14:09:46] [SEVERE ] setting player 0 freeze to 3000
+[2022-12-13 14:09:47] [SEVERE ] setting player 0 freeze to 2000
+[2022-12-13 14:09:48] [SEVERE ] setting player 0 freeze to 1000
+[2022-12-13 14:09:49] [SEVERE ] setting player 0 freeze to 0
+[2022-12-13 14:09:54] [SEVERE ] Key 90 was pressed by player 0
+[2022-12-13 14:09:54] [SEVERE ] removing player 0 token from slot 8
+[2022-12-13 14:09:54] [SEVERE ] Key 90 was pressed by player 0
+[2022-12-13 14:09:54] [SEVERE ] player 0 placing token on slot 8
+[2022-12-13 14:09:54] [SEVERE ] setting player 0 freeze to 3000
+[2022-12-13 14:09:55] [SEVERE ] setting player 0 freeze to 2000
+[2022-12-13 14:09:56] [SEVERE ] setting player 0 freeze to 1000
+[2022-12-13 14:09:57] [SEVERE ] setting player 0 freeze to 0
+[2022-12-13 14:09:59] [SEVERE ] Key 90 was pressed by player 0
+[2022-12-13 14:09:59] [SEVERE ] removing player 0 token from slot 8
+[2022-12-13 14:09:59] [SEVERE ] Key 90 was pressed by player 0
+[2022-12-13 14:09:59] [SEVERE ] player 0 placing token on slot 8
+[2022-12-13 14:09:59] [SEVERE ] setting player 0 freeze to 3000
+[2022-12-13 14:10:00] [SEVERE ] setting player 0 freeze to 2000
+[2022-12-13 14:10:01] [SEVERE ] setting player 0 freeze to 1000
+[2022-12-13 14:10:02] [SEVERE ] setting player 0 freeze to 0
+[2022-12-13 14:10:04] [SEVERE ] Key 90 was pressed by player 0
+[2022-12-13 14:10:04] [SEVERE ] removing player 0 token from slot 8
+[2022-12-13 14:10:05] [SEVERE ] Key 88 was pressed by player 0
+[2022-12-13 14:10:05] [SEVERE ] removing player 0 token from slot 9
+[2022-12-13 14:10:05] [SEVERE ] Key 67 was pressed by player 0
+[2022-12-13 14:10:05] [SEVERE ] removing player 0 token from slot 10
+[2022-12-13 14:10:22] [SEVERE ] Key 87 was pressed by player 0
+[2022-12-13 14:10:22] [SEVERE ] player 0 placing token on slot 1
+[2022-12-13 14:10:23] [SEVERE ] Key 82 was pressed by player 0
+[2022-12-13 14:10:23] [SEVERE ] player 0 placing token on slot 3
+[2022-12-13 14:10:25] [SEVERE ] Key 68 was pressed by player 0
+[2022-12-13 14:10:25] [SEVERE ] player 0 placing token on slot 6
+[2022-12-13 14:10:25] [SEVERE ] setting player 0 freeze to 3000
+[2022-12-13 14:10:26] [SEVERE ] setting player 0 freeze to 2000
+[2022-12-13 14:10:27] [SEVERE ] setting player 0 freeze to 1000
+[2022-12-13 14:10:28] [SEVERE ] setting player 0 freeze to 0
+[2022-12-13 14:11:21] [SEVERE ] Key 90 was pressed by player 0
+[2022-12-13 14:11:21] [SEVERE ] setting player 0 freeze to 3000
+[2022-12-13 14:11:22] [SEVERE ] setting player 0 freeze to 2000
+[2022-12-13 14:11:23] [SEVERE ] setting player 0 freeze to 1000
+[2022-12-13 14:11:24] [SEVERE ] setting player 0 freeze to 0
+[2022-12-13 14:11:26] [SEVERE ] Key 90 was pressed by player 0
+[2022-12-13 14:11:26] [SEVERE ] setting player 0 freeze to 3000
+[2022-12-13 14:11:27] [SEVERE ] setting player 0 freeze to 2000
+[2022-12-13 14:11:28] [SEVERE ] setting player 0 freeze to 1000
+[2022-12-13 14:11:29] [SEVERE ] setting player 0 freeze to 0
+[2022-12-13 14:11:47] [SEVERE ] Key 90 was pressed by player 0
+[2022-12-13 14:11:47] [SEVERE ] setting player 0 freeze to 3000
+[2022-12-13 14:11:48] [SEVERE ] setting player 0 freeze to 2000
+[2022-12-13 14:11:49] [SEVERE ] setting player 0 freeze to 1000
+[2022-12-13 14:11:50] [SEVERE ] setting player 0 freeze to 0
+[2022-12-13 14:12:12] [SEVERE ] Key 88 was pressed by player 0
+[2022-12-13 14:12:12] [SEVERE ] setting player 0 freeze to 3000
+[2022-12-13 14:12:13] [SEVERE ] Key 67 was pressed by player 0
+[2022-12-13 14:12:13] [SEVERE ] setting player 0 freeze to 2000
+[2022-12-13 14:12:14] [SEVERE ] setting player 0 freeze to 1000
+[2022-12-13 14:12:14] [SEVERE ] Key 86 was pressed by player 0
+[2022-12-13 14:12:15] [SEVERE ] Key 67 was pressed by player 0
+[2022-12-13 14:12:15] [SEVERE ] Key 88 was pressed by player 0
+[2022-12-13 14:12:15] [SEVERE ] Key 86 was pressed by player 0
+[2022-12-13 14:12:15] [SEVERE ] Key 88 was pressed by player 0
+[2022-12-13 14:12:15] [SEVERE ] setting player 0 freeze to 0
+[2022-12-13 14:12:15] [SEVERE ] setting player 0 freeze to 3000
+[2022-12-13 14:12:15] [SEVERE ] Key 67 was pressed by player 0
+[2022-12-13 14:12:15] [SEVERE ] Key 86 was pressed by player 0
+[2022-12-13 14:12:15] [SEVERE ] Key 88 was pressed by player 0
+[2022-12-13 14:12:16] [SEVERE ] Key 86 was pressed by player 0
+[2022-12-13 14:12:16] [SEVERE ] setting player 0 freeze to 2000
+[2022-12-13 14:12:17] [SEVERE ] Key 67 was pressed by player 0
+[2022-12-13 14:12:17] [SEVERE ] setting player 0 freeze to 1000
+[2022-12-13 14:12:17] [SEVERE ] Key 88 was pressed by player 0
+[2022-12-13 14:12:18] [SEVERE ] Key 88 was pressed by player 0
+[2022-12-13 14:12:18] [SEVERE ] setting player 0 freeze to 0
+[2022-12-13 14:12:18] [SEVERE ] setting player 0 freeze to 3000
+[2022-12-13 14:12:19] [SEVERE ] setting player 0 freeze to 2000
+[2022-12-13 14:12:20] [SEVERE ] setting player 0 freeze to 1000
+[2022-12-13 14:12:21] [SEVERE ] setting player 0 freeze to 0
+[2022-12-13 14:12:21] [SEVERE ] setting player 0 freeze to 3000
+[2022-12-13 14:12:22] [SEVERE ] setting player 0 freeze to 2000
+[2022-12-13 14:12:23] [SEVERE ] setting player 0 freeze to 1000
+[2022-12-13 14:12:24] [SEVERE ] setting player 0 freeze to 0
+[2022-12-13 14:12:24] [SEVERE ] setting player 0 freeze to 3000
+[2022-12-13 14:12:25] [SEVERE ] setting player 0 freeze to 2000
+[2022-12-13 14:12:26] [SEVERE ] setting player 0 freeze to 1000
+[2022-12-13 14:12:27] [SEVERE ] setting player 0 freeze to 0
+[2022-12-13 14:12:27] [SEVERE ] setting player 0 freeze to 3000
+[2022-12-13 14:12:28] [SEVERE ] setting player 0 freeze to 2000
+[2022-12-13 14:12:29] [SEVERE ] setting player 0 freeze to 1000
+[2022-12-13 14:12:30] [SEVERE ] setting player 0 freeze to 0
+[2022-12-13 14:12:30] [SEVERE ] setting player 0 freeze to 3000
+[2022-12-13 14:12:31] [SEVERE ] setting player 0 freeze to 2000
+[2022-12-13 14:12:32] [SEVERE ] setting player 0 freeze to 1000
+[2022-12-13 14:12:33] [SEVERE ] setting player 0 freeze to 0
+[2022-12-13 14:12:33] [SEVERE ] setting player 0 freeze to 3000

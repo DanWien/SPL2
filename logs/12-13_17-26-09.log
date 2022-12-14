@@ -1,0 +1,53 @@
+[2022-12-13 17:26:09] [INFO   ] cannot read configuration file config.properties trying from resources.
+[2022-12-13 17:26:09] [INFO   ] configuration file was loaded from resources directory.
+[2022-12-13 17:26:09] [INFO   ] Thread dealer starting.
+[2022-12-13 17:26:09] [INFO   ] Thread player1starting.
+[2022-12-13 17:26:09] [INFO   ] Thread player0starting.
+[2022-12-13 17:26:09] [SEVERE ] placing card 24 in slot 7
+[2022-12-13 17:26:09] [SEVERE ] placing card 40 in slot 8
+[2022-12-13 17:26:09] [SEVERE ] placing card 53 in slot 3
+[2022-12-13 17:26:09] [SEVERE ] placing card 55 in slot 6
+[2022-12-13 17:26:09] [SEVERE ] placing card 23 in slot 0
+[2022-12-13 17:26:10] [SEVERE ] placing card 77 in slot 2
+[2022-12-13 17:26:10] [SEVERE ] placing card 54 in slot 10
+[2022-12-13 17:26:10] [SEVERE ] placing card 72 in slot 9
+[2022-12-13 17:26:10] [SEVERE ] placing card 75 in slot 4
+[2022-12-13 17:26:10] [SEVERE ] placing card 10 in slot 11
+[2022-12-13 17:26:10] [SEVERE ] placing card 30 in slot 5
+[2022-12-13 17:26:10] [SEVERE ] placing card 35 in slot 1
+[2022-12-13 17:26:34] [SEVERE ] Key 47 was pressed by player 1
+[2022-12-13 17:26:34] [SEVERE ] player 1 placing token on slot 11
+[2022-12-13 17:26:36] [SEVERE ] Key 73 was pressed by player 1
+[2022-12-13 17:26:36] [SEVERE ] player 1 placing token on slot 1
+[2022-12-13 17:26:39] [SEVERE ] Key 74 was pressed by player 1
+[2022-12-13 17:26:39] [SEVERE ] player 1 placing token on slot 4
+[2022-12-13 17:26:39] [SEVERE ] removing player 1 token from slot 11
+[2022-12-13 17:26:39] [SEVERE ] removing card from slot 11
+[2022-12-13 17:26:39] [SEVERE ] removing player 1 token from slot 1
+[2022-12-13 17:26:39] [SEVERE ] removing card from slot 1
+[2022-12-13 17:26:39] [SEVERE ] removing player 1 token from slot 4
+[2022-12-13 17:26:39] [SEVERE ] removing card from slot 4
+[2022-12-13 17:26:39] [SEVERE ] placing card 67 in slot 1
+[2022-12-13 17:26:40] [SEVERE ] placing card 4 in slot 4
+[2022-12-13 17:26:40] [SEVERE ] placing card 60 in slot 11
+[2022-12-13 17:26:40] [SEVERE ] setting player 1 score to 1
+[2022-12-13 17:26:40] [SEVERE ] setting player 1 freeze to 1000
+[2022-12-13 17:26:41] [SEVERE ] setting player 1 freeze to 0
+[2022-12-13 17:27:05] [SEVERE ] Key 81 was pressed by player 0
+[2022-12-13 17:27:05] [SEVERE ] player 0 placing token on slot 0
+[2022-12-13 17:27:07] [SEVERE ] Key 87 was pressed by player 0
+[2022-12-13 17:27:07] [SEVERE ] player 0 placing token on slot 1
+[2022-12-13 17:27:15] [SEVERE ] Key 83 was pressed by player 0
+[2022-12-13 17:27:15] [SEVERE ] player 0 placing token on slot 5
+[2022-12-13 17:27:15] [SEVERE ] removing player 0 token from slot 0
+[2022-12-13 17:27:15] [SEVERE ] removing card from slot 0
+[2022-12-13 17:27:15] [SEVERE ] removing player 0 token from slot 1
+[2022-12-13 17:27:15] [SEVERE ] removing card from slot 1
+[2022-12-13 17:27:15] [SEVERE ] removing player 0 token from slot 5
+[2022-12-13 17:27:15] [SEVERE ] removing card from slot 5
+[2022-12-13 17:27:16] [SEVERE ] placing card 29 in slot 5
+[2022-12-13 17:27:16] [SEVERE ] placing card 2 in slot 1
+[2022-12-13 17:27:16] [SEVERE ] placing card 18 in slot 0
+[2022-12-13 17:27:16] [SEVERE ] setting player 0 score to 1
+[2022-12-13 17:27:16] [SEVERE ] setting player 0 freeze to 1000
+[2022-12-13 17:27:17] [SEVERE ] setting player 0 freeze to 0

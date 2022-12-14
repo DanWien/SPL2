@@ -1,0 +1,4 @@
+[2022-12-12 18:01:31] [INFO   ] cannot read configuration file config.properties trying from resources.
+[2022-12-12 18:01:31] [INFO   ] configuration file was loaded from resources directory.
+[2022-12-12 18:01:32] [INFO   ] Thread dealer starting.
+[2022-12-12 18:01:34] [SEVERE ] Exit button pressed
