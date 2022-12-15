@@ -118,7 +118,7 @@ public class Player implements Runnable {
                 int currSlot = keyQueue.poll();
                 boolean exists = false;
                 for (int i = 0; i < 3; i++) {
-                    if (tokens[i] != -1 && tokens[i] == currSlot)
+                    if (tokens[i] == currSlot)
                         exists = true;
                 }
                 if (exists)
@@ -126,7 +126,7 @@ public class Player implements Runnable {
                 else if (numOfTokens < 3) {
                     placeToken(currSlot);
                     if (numOfTokens == 3) {
-                        synchronized(table.setQueue) {
+                        synchronized (table.setQueue) {
                             table.setQueue.add(id);
                         }
                         dealer.notifyDealer();
@@ -134,7 +134,8 @@ public class Player implements Runnable {
                             synchronized (playerLock) {
                                 playerLock.wait();
                             }
-                        } catch (InterruptedException e) {}
+                        } catch (InterruptedException e) {
+                        }
                     }
                 }
             }
@@ -239,27 +240,23 @@ public class Player implements Runnable {
 
     public void removeToken(int slot) {
         synchronized (table) {
-            if (numOfTokens > 0) {
-                table.removeToken(id, slot);
-                for (int i = 0; i < 3; i++) {
-                    if (tokens[i] != -1 && tokens[i] == slot)
-                        tokens[i] = -1;
-                }
-                numOfTokens--;
+            for (int i = 0; i < 3; i++) {
+                if (tokens[i] == slot)
+                    tokens[i] = -1;
             }
+            table.removeToken(id, slot);
+            numOfTokens--;
         }
     }
 
     public void placeToken(int slot) {
         synchronized (table) {
-            if (numOfTokens < 3) {
-                table.placeToken(id, slot);
-                int i = 0;
-                while (tokens[i] != -1)
-                    i++;
-                tokens[i] = slot;
-                numOfTokens++;
-            }
+            int i = 0;
+            while (tokens[i] != -1)
+                i++;
+            tokens[i] = slot;
+            table.placeToken(id, slot);
+            numOfTokens++;
         }
     }
 
@@ -293,9 +290,9 @@ public class Player implements Runnable {
         }
     }
 
-    public boolean realSet () {
-        for(int i : tokens) {
-            if(i == -1)
+    public boolean realSet() {
+        for (int i : tokens) {
+            if (i == -1)
                 return false;
         }
         return true;
