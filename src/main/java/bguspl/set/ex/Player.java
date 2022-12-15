@@ -71,9 +71,10 @@ public class Player implements Runnable {
     private int penalty = 0;
     private boolean waitNow = false; // idea to make them sleep while cards are dealt.
 
-    private Object obj = new Object();
+    private Object playerLock = new Object();
 
     private Dealer dealer;
+
     /**
      * The class constructor.
      *
@@ -92,7 +93,7 @@ public class Player implements Runnable {
         for (int i = 0; i < 3; i++)
             tokens[i] = -1;
         keyQueue = new ArrayBlockingQueue<>(3);
-        this.dealer=dealer;
+        this.dealer = dealer;
 
     }
 
@@ -113,7 +114,7 @@ public class Player implements Runnable {
                 penalty();
                 penalty = 0;
             }
-            while (!keyQueue.isEmpty() & numOfTokens <= 3) {
+            if (!keyQueue.isEmpty() & numOfTokens <= 3) {
                 int currSlot = keyQueue.poll();
                 boolean exists = false;
                 for (int i = 0; i < 3; i++) {
@@ -125,15 +126,15 @@ public class Player implements Runnable {
                 else if (numOfTokens < 3) {
                     placeToken(currSlot);
                     if (numOfTokens == 3) {
-                        table.setQueue.add(id);
+                        synchronized(table.setQueue) {
+                            table.setQueue.add(id);
+                        }
                         dealer.notifyDealer();
                         try {
-                            synchronized (obj) {
-                                obj.wait();
+                            synchronized (playerLock) {
+                                playerLock.wait();
                             }
-                        } catch (InterruptedException e) {
-                            release();
-                        }
+                        } catch (InterruptedException e) {}
                     }
                 }
             }
@@ -160,11 +161,11 @@ public class Player implements Runnable {
             while (!terminate) {
                 keyPressed(simulator.nextInt(env.config.tableSize));
                 //try {
-                  //  synchronized (this) {
+                //  synchronized (this) {
                 //        wait();
-                  //  }
+                //  }
                 //} catch (InterruptedException ignored) {
-               // }
+                // }
             }
             env.logger.log(Level.INFO, "Thread " + Thread.currentThread().getName() + " terminated.");
         }, "computer-" + id);
@@ -237,13 +238,15 @@ public class Player implements Runnable {
     }
 
     public void removeToken(int slot) {
-        if (numOfTokens > 0) {
-            table.removeToken(id, slot);
-            for (int i = 0; i < 3; i++) {
-                if (tokens[i] != -1 && tokens[i] == slot)
-                    tokens[i] = -1;
+        synchronized (table) {
+            if (numOfTokens > 0) {
+                table.removeToken(id, slot);
+                for (int i = 0; i < 3; i++) {
+                    if (tokens[i] != -1 && tokens[i] == slot)
+                        tokens[i] = -1;
+                }
+                numOfTokens--;
             }
-            numOfTokens--;
         }
     }
 
@@ -285,8 +288,16 @@ public class Player implements Runnable {
     }
 
     public void release() {
-        synchronized (obj) {
-            obj.notifyAll();
+        synchronized (playerLock) {
+            playerLock.notifyAll();
         }
+    }
+
+    public boolean realSet () {
+        for(int i : tokens) {
+            if(i == -1)
+                return false;
+        }
+        return true;
     }
 }

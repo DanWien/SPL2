@@ -3,6 +3,7 @@ package bguspl.set.ex;
 import bguspl.set.Env;
 
 import java.util.*;
+import java.util.concurrent.SynchronousQueue;
 import java.util.stream.Collectors;
 
 /**
@@ -33,7 +34,7 @@ public class Table {
     /**
      * This queue will store the sets that need to be checked
      */
-    protected Object lock = new Object();
+    protected Object someLock = new Object();
     /**
      * This queue will store the sets that need to be checked
      */
@@ -52,7 +53,8 @@ public class Table {
         this.slotToCard = slotToCard;
         this.cardToSlot = cardToSlot;
         slotToPlayer = new boolean[env.config.players][12];
-        setQueue = new LinkedList<>();
+        setQueue = new SynchronousQueue<>();
+
     }
 
     /**
@@ -105,10 +107,9 @@ public class Table {
             Thread.sleep(env.config.tableDelayMillis);
         } catch (InterruptedException ignored) {
         }
-
+        env.ui.placeCard(card, slot);
         cardToSlot[card] = slot;
         slotToCard[slot] = card;
-        env.ui.placeCard(card, slot);
     }
 
     /**
@@ -121,10 +122,10 @@ public class Table {
             Thread.sleep(env.config.tableDelayMillis);
         } catch (InterruptedException ignored) {
         }
+        env.ui.removeCard(slot);
         int card = slotToCard[slot];
         slotToCard[slot] = null;
         cardToSlot[card] = null;
-        env.ui.removeCard(slot);
     }
 
     /**
@@ -133,13 +134,11 @@ public class Table {
      * @param player - the player the token belongs to.
      * @param slot   - the slot on which to place the token.
      */
-    public boolean placeToken(int player, int slot) {
+    public void placeToken(int player, int slot) {
         if (slotToCard[slot] != null) {
             env.ui.placeToken(player, slot);
             slotToPlayer[player][slot] = true;
-            return true;
         }
-        return false;
     }
 
     /**
@@ -150,10 +149,11 @@ public class Table {
      * @return - true iff a token was successfully removed.
      */
     public boolean removeToken(int player, int slot) {
-        //if(slotToCard[slot] == null)
-        // return false;
-        env.ui.removeToken(player, slot);
-        slotToPlayer[player][slot] = false;
-        return true;
+        if (slotToCard[slot] != null) {
+            env.ui.removeToken(player, slot);
+            slotToPlayer[player][slot] = false;
+            return true;
+        }
+        return false;
     }
 }

@@ -50,7 +50,7 @@ public class Dealer implements Runnable {
     private long sleepTime = 10;
 
     private Thread dealerThread;
-    private Object lock = new Object();
+    private Object dealerLock = new Object();
 
     public Dealer(Env env, Table table, Player[] players) {
         this.env = env;
@@ -66,7 +66,7 @@ public class Dealer implements Runnable {
      */
     @Override
     public void run() {
-        dealerThread=Thread.currentThread();
+        dealerThread = Thread.currentThread();
         env.logger.log(Level.INFO, "Thread " + Thread.currentThread().getName() + " starting.");
         for (int i = 0; i < players.length; i++) {
             Thread curr = players[i].createThread();
@@ -105,8 +105,10 @@ public class Dealer implements Runnable {
         for (Player p : players) {
             p.release();
             p.terminate();
-            try { plThreads[i].join(); }
-            catch (InterruptedException e) {}
+            try {
+                plThreads[i].join();
+            } catch (InterruptedException e) {
+            }
             i++;
         }
         terminate = true;
@@ -125,33 +127,31 @@ public class Dealer implements Runnable {
      * Checks cards should be removed from the table and removes them.
      */
     private void removeCardsFromTable() {
-        //synchronized (table.lock) {
-        while (!table.setQueue.isEmpty()) {
+        if (!table.setQueue.isEmpty()) {
             int id = table.setQueue.poll();
             int[] playerSlots = players[id].getTokens();
-            int[] setToCheck = {table.slotToCard[playerSlots[0]], table.slotToCard[playerSlots[1]], table.slotToCard[playerSlots[2]]};
-            boolean isLegalSet = env.util.testSet(setToCheck);
-            if (isLegalSet) {
-                for (int i = 0; i < playerSlots.length; i++) {
-                    for (int j = 0; j < env.config.players; j++) {
-                        if (table.slotToPlayer[j][playerSlots[i]])
-                            players[j].removeToken(playerSlots[i]);
+            if (players[id].realSet()) {
+                int[] setToCheck = {table.slotToCard[playerSlots[0]], table.slotToCard[playerSlots[1]], table.slotToCard[playerSlots[2]]};
+                boolean isLegalSet = env.util.testSet(setToCheck);
+                if (isLegalSet) {
+                    for (int i = 0; i < playerSlots.length; i++) {
+                        for (int j = 0; j < env.config.players; j++) {
+                            if (table.slotToPlayer[j][playerSlots[i]])
+                                players[j].removeToken(playerSlots[i]);
+                        }
+                        table.removeCard(playerSlots[i]);
                     }
-                    table.removeCard(playerSlots[i]);
+                    needNewCards = true;
+                    updateTimerDisplay(true);
+                    players[id].setPenalty(1);
+                } else {
+                    players[id].setPenalty(3);
                 }
-                needNewCards = true;
-                placeCardsOnTable();
-                updateTimerDisplay(true);
-                players[id].setPenalty(1);
-            } else {
-                players[id].setPenalty(3);
             }
-            plThreads[id].interrupt();
+            players[id].release();
         }
-
     }
 
-    //}
     private void shuffleTable() {
         synchronized (table) {
             Random cardRandom = new Random();
@@ -170,19 +170,31 @@ public class Dealer implements Runnable {
      * Check if any cards can be removed from the deck and placed on the table.
      */
     private void placeCardsOnTable() {
-        if (needNewCards) {
-            Random cardRandom = new Random();
-            List<Integer> slots = new ArrayList<>();
-            for (int i = 0; i < env.config.tableSize; i++) {
-                if (table.slotToCard[i] == null)
-                    slots.add(i);
+        if (deck.size() > 0) {
+            if (needNewCards) {
+                Random cardRandom = new Random();
+                List<Integer> slots = new ArrayList<>();
+                for (int i = 0; i < env.config.tableSize; i++) {
+                    if (table.slotToCard[i] == null)
+                        slots.add(i);
+                }
+                Collections.shuffle(slots);
+                for (int i = 0; i < slots.size(); i++) {
+                    int cardIdx = cardRandom.nextInt(deck.size());
+                    table.placeCard(deck.remove(cardIdx), slots.get(i));
+                }
+                needNewCards = false;
             }
-            Collections.shuffle(slots);
-            for (int i = 0; i < slots.size(); i++) {
-                int cardIdx = cardRandom.nextInt(deck.size());
-                table.placeCard(deck.remove(cardIdx), slots.get(i));
+        }
+        else {
+            List<Integer> cardsLeft = new ArrayList<>();
+            for(int i = 0 ; i < env.config.tableSize ; i++) {
+                Integer card = table.slotToCard[i];
+                if (card != null)
+                    cardsLeft.add(card);
             }
-            needNewCards = false;
+            if(env.util.findSets(cardsLeft,1).size() == 0)
+                terminate();
         }
         //notifyAll();
     }
@@ -191,9 +203,9 @@ public class Dealer implements Runnable {
      * Sleep for a fixed amount of time or until the thread is awakened for some purpose.
      */
     private void sleepUntilWokenOrTimeout() {
-        synchronized (lock) {
+        synchronized (dealerLock) {
             try {
-                lock.wait(600);
+                dealerLock.wait(50);
             } catch (InterruptedException e) {
             }
         }
@@ -252,9 +264,10 @@ public class Dealer implements Runnable {
             winningPlayers[i] = winners.get(i);
         env.ui.announceWinner(winningPlayers);
     }
-    public void notifyDealer () {
-        synchronized (lock) {
-            lock.notifyAll();
+
+    public void notifyDealer() {
+        synchronized (dealerLock) {
+            dealerLock.notifyAll();
         }
     }
 }
