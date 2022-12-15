@@ -75,7 +75,7 @@ public class Dealer implements Runnable {
         }
         while (!shouldFinish()) {
             placeCardsOnTable();
-            reshuffleTime = System.currentTimeMillis() + 60999;
+            reshuffleTime = System.currentTimeMillis() + 10000;
             timerLoop();
             updateTimerDisplay(false);
             removeAllCardsFromTable();
@@ -101,13 +101,14 @@ public class Dealer implements Runnable {
      * Called when the game should be terminated due to an external event.
      */
     public void terminate() {
-        int i=0;
-        for(Player p : players) {
+        int i = 0;
+        for (Player p : players) {
             p.terminate();
             try {
                 plThreads[i].join();
+            } catch (InterruptedException ignored) {
             }
-            catch (InterruptedException ignored) {};
+            ;
             i++;
         }
         terminate = true;
@@ -128,14 +129,7 @@ public class Dealer implements Runnable {
     private void removeCardsFromTable() {
         //synchronized (table.lock) {
         while (!table.setQueue.isEmpty()) {
-            //for (Player p :players)
-                //p.setWait(true);
             int id = table.setQueue.poll();
-            //try {
-            //    plThreads[id].wait();
-            // } catch (InterruptedException Ignored) {
-            //}
-            ;
             int[] playerSlots = players[id].getTokens();
             int[] setToCheck = {table.slotToCard[playerSlots[0]], table.slotToCard[playerSlots[1]], table.slotToCard[playerSlots[2]]};
             boolean isLegalSet = env.util.testSet(setToCheck);
@@ -149,10 +143,14 @@ public class Dealer implements Runnable {
                 }
                 needNewCards = true;
                 placeCardsOnTable();
-                //notifyAll();
                 updateTimerDisplay(true);
+                players[id].release();
                 players[id].setPenalty(1);
-            } else players[id].setPenalty(3);
+            } else {
+                players[id].release();
+                players[id].setPenalty(3);
+            }
+
         }
     }
     //}
@@ -184,7 +182,8 @@ public class Dealer implements Runnable {
     private void sleepUntilWokenOrTimeout() {
         try {
             Thread.sleep(10);
-        } catch (InterruptedException e) {}
+        } catch (InterruptedException e) {
+        }
     }
 
     /**
@@ -193,7 +192,7 @@ public class Dealer implements Runnable {
     private void updateTimerDisplay(boolean reset) {
         if (reset) {
             env.ui.setCountdown(reshuffleTime - System.currentTimeMillis(), false);
-            reshuffleTime = System.currentTimeMillis() + 60000;
+            reshuffleTime = System.currentTimeMillis() + 10000;
         } else {
             if (reshuffleTime - System.currentTimeMillis() <= 5000) {
                 env.ui.setCountdown(max(0, reshuffleTime - System.currentTimeMillis()), true);
@@ -206,22 +205,21 @@ public class Dealer implements Runnable {
      * Returns all the cards from the table to the deck.
      */
     private void removeAllCardsFromTable() {
-        env.ui.removeTokens();
-        for (int i = 0; i < players.length; i++) {
-            //try {
-            // plThreads[i].wait();
-            //} catch (InterruptedException e) {
-            // }
-            players[i].removeTokens();
-        }
-        for (int i = 0; i < 12; i++) {
-            Integer card = table.slotToCard[i];
-            if (card != null) {
-                table.removeCard(i);
-                deck.add(card);
+        synchronized (table) {
+            env.ui.removeTokens();
+            for (int i = 0; i < players.length; i++) {
+                players[i].removeTokens();
             }
+            for (int i = 0; i < 12; i++) {
+                Integer card = table.slotToCard[i];
+                if (card != null) {
+                    table.removeCard(i);
+                    deck.add(card);
+                }
+            }
+            needNewCards = true;
+            placeCardsOnTable();
         }
-        needNewCards = true;
     }
 
     /**

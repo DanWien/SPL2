@@ -68,7 +68,9 @@ public class Player implements Runnable {
      */
     private Queue<Integer> keyQueue;
     private int penalty = 0;
-    private boolean sleepNow = false; // idea to make them sleep while cards are dealt.
+    private boolean waitNow = false; // idea to make them sleep while cards are dealt.
+
+    private Object obj = new Object();
 
     /**
      * The class constructor.
@@ -107,10 +109,6 @@ public class Player implements Runnable {
                 penalty = 0;
                 penalty();
             }
-            //if(sleepNow) {
-            //    try {wait();}
-            //    catch (InterruptedException ignored) {};
-            //}
             while (!keyQueue.isEmpty() & numOfTokens <= 3) {
                 int currSlot = keyQueue.poll();
                 boolean exists = false;
@@ -124,15 +122,24 @@ public class Player implements Runnable {
                     placeToken(currSlot);
                     if (numOfTokens == 3) {
                         table.setQueue.add(id);
+                        try {
+                            synchronized (obj) {
+                                obj.wait();
+                            }
+                        } catch (InterruptedException e) {
+                        }
                     }
                 }
             }
         }
         if (!human) try {
             aiThread.join();
-        } catch (InterruptedException ignored) {
+        } catch (
+                InterruptedException ignored) {
         }
-        env.logger.log(Level.INFO, "Thread " + Thread.currentThread().getName() + " terminated.");
+        env.logger.log(Level.INFO, "Thread " + Thread.currentThread().
+
+                getName() + " terminated.");
     }
 
     /**
@@ -234,13 +241,15 @@ public class Player implements Runnable {
     }
 
     public void placeToken(int slot) {
-        if (numOfTokens < 3) {
-            table.placeToken(id, slot);
-            int i = 0;
-            while (tokens[i] != -1)
-                i++;
-            tokens[i] = slot;
-            numOfTokens++;
+        synchronized (table) {
+            if (numOfTokens < 3) {
+                table.placeToken(id, slot);
+                int i = 0;
+                while (tokens[i] != -1)
+                    i++;
+                tokens[i] = slot;
+                numOfTokens++;
+            }
         }
     }
 
@@ -259,11 +268,18 @@ public class Player implements Runnable {
     public void setPenalty(int i) {
         penalty = i;
     }
-    public void setWait(boolean b){
-        sleepNow = b;
+
+    public void setWait(boolean b) {
+        waitNow = b;
     }
 
-    public void setTerminate () {
+    public void setTerminate() {
         terminate = true;
+    }
+
+    public void release() {
+        synchronized (obj) {
+            obj.notifyAll();
+        }
     }
 }
