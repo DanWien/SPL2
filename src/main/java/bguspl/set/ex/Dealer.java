@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static java.lang.Math.max;
+import static java.lang.Math.min;
 
 /**
  * This class manages the dealer's threads and data
@@ -30,10 +31,6 @@ public class Dealer implements Runnable {
      */
     private final List<Integer> deck;
     /**
-     * This array of boolean values indicates whether a card was placed on the table or not.
-     */
-    private boolean[] flags;
-    /**
      * True iff game should be terminated due to an external event.
      */
     private volatile boolean terminate;
@@ -52,12 +49,14 @@ public class Dealer implements Runnable {
     private boolean needNewCards = true;
     private long sleepTime = 10;
 
+    private Thread dealerThread;
+    private Object lock = new Object();
+
     public Dealer(Env env, Table table, Player[] players) {
         this.env = env;
         this.table = table;
         this.players = players;
         deck = IntStream.range(0, env.config.deckSize).boxed().collect(Collectors.toList());
-        flags = new boolean[81];
         plThreads = new Thread[players.length];
 
     }
@@ -67,6 +66,7 @@ public class Dealer implements Runnable {
      */
     @Override
     public void run() {
+        dealerThread=Thread.currentThread();
         env.logger.log(Level.INFO, "Thread " + Thread.currentThread().getName() + " starting.");
         for (int i = 0; i < players.length; i++) {
             Thread curr = players[i].createThread();
@@ -74,8 +74,8 @@ public class Dealer implements Runnable {
             curr.start();
         }
         while (!shouldFinish()) {
-            placeCardsOnTable();
-            reshuffleTime = System.currentTimeMillis() + 10000;
+            shuffleTable();
+            reshuffleTime = System.currentTimeMillis() + env.config.turnTimeoutMillis;
             timerLoop();
             updateTimerDisplay(false);
             removeAllCardsFromTable();
@@ -103,12 +103,10 @@ public class Dealer implements Runnable {
     public void terminate() {
         int i = 0;
         for (Player p : players) {
+            p.release();
             p.terminate();
-            try {
-                plThreads[i].join();
-            } catch (InterruptedException ignored) {
-            }
-            ;
+            try { plThreads[i].join(); }
+            catch (InterruptedException e) {}
             i++;
         }
         terminate = true;
@@ -144,16 +142,29 @@ public class Dealer implements Runnable {
                 needNewCards = true;
                 placeCardsOnTable();
                 updateTimerDisplay(true);
-                players[id].release();
                 players[id].setPenalty(1);
             } else {
-                players[id].release();
                 players[id].setPenalty(3);
             }
+            plThreads[id].interrupt();
+        }
 
+    }
+
+    //}
+    private void shuffleTable() {
+        synchronized (table) {
+            Random cardRandom = new Random();
+            List<Integer> slots = new ArrayList<>();
+            for (int i = 0; i < env.config.tableSize; i++)
+                slots.add(i);
+            Collections.shuffle(slots);
+            for (int i = 0; i < min(env.config.tableSize, deck.size()); i++) {
+                int cardIdx = cardRandom.nextInt(deck.size());
+                table.placeCard(deck.remove(cardIdx), slots.get(i));
+            }
         }
     }
-    //}
 
     /**
      * Check if any cards can be removed from the deck and placed on the table.
@@ -162,7 +173,7 @@ public class Dealer implements Runnable {
         if (needNewCards) {
             Random cardRandom = new Random();
             List<Integer> slots = new ArrayList<>();
-            for (int i = 0; i < 12; i++) {
+            for (int i = 0; i < env.config.tableSize; i++) {
                 if (table.slotToCard[i] == null)
                     slots.add(i);
             }
@@ -180,9 +191,11 @@ public class Dealer implements Runnable {
      * Sleep for a fixed amount of time or until the thread is awakened for some purpose.
      */
     private void sleepUntilWokenOrTimeout() {
-        try {
-            Thread.sleep(10);
-        } catch (InterruptedException e) {
+        synchronized (lock) {
+            try {
+                lock.wait(600);
+            } catch (InterruptedException e) {
+            }
         }
     }
 
@@ -192,9 +205,9 @@ public class Dealer implements Runnable {
     private void updateTimerDisplay(boolean reset) {
         if (reset) {
             env.ui.setCountdown(reshuffleTime - System.currentTimeMillis(), false);
-            reshuffleTime = System.currentTimeMillis() + 10000;
+            reshuffleTime = System.currentTimeMillis() + env.config.turnTimeoutMillis;
         } else {
-            if (reshuffleTime - System.currentTimeMillis() <= 5000) {
+            if (reshuffleTime - System.currentTimeMillis() <= env.config.turnTimeoutWarningMillis) {
                 env.ui.setCountdown(max(0, reshuffleTime - System.currentTimeMillis()), true);
             } else
                 env.ui.setCountdown(reshuffleTime - System.currentTimeMillis(), false);
@@ -210,15 +223,13 @@ public class Dealer implements Runnable {
             for (int i = 0; i < players.length; i++) {
                 players[i].removeTokens();
             }
-            for (int i = 0; i < 12; i++) {
+            for (int i = 0; i < env.config.tableSize; i++) {
                 Integer card = table.slotToCard[i];
                 if (card != null) {
                     table.removeCard(i);
                     deck.add(card);
                 }
             }
-            needNewCards = true;
-            placeCardsOnTable();
         }
     }
 
@@ -240,5 +251,10 @@ public class Dealer implements Runnable {
         for (int i = 0; i < winningPlayers.length; i++)
             winningPlayers[i] = winners.get(i);
         env.ui.announceWinner(winningPlayers);
+    }
+    public void notifyDealer () {
+        synchronized (lock) {
+            lock.notifyAll();
+        }
     }
 }

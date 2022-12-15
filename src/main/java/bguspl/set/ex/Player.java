@@ -2,6 +2,7 @@ package bguspl.set.ex;
 
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.Random;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.logging.Level;
 
@@ -72,6 +73,7 @@ public class Player implements Runnable {
 
     private Object obj = new Object();
 
+    private Dealer dealer;
     /**
      * The class constructor.
      *
@@ -90,6 +92,8 @@ public class Player implements Runnable {
         for (int i = 0; i < 3; i++)
             tokens[i] = -1;
         keyQueue = new ArrayBlockingQueue<>(3);
+        this.dealer=dealer;
+
     }
 
     /**
@@ -103,11 +107,11 @@ public class Player implements Runnable {
 
         while (!terminate) {
             if (penalty == 1) {
-                penalty = 0;
                 point();
-            } else if (penalty == 3) {
                 penalty = 0;
+            } else if (penalty == 3) {
                 penalty();
+                penalty = 0;
             }
             while (!keyQueue.isEmpty() & numOfTokens <= 3) {
                 int currSlot = keyQueue.poll();
@@ -122,11 +126,13 @@ public class Player implements Runnable {
                     placeToken(currSlot);
                     if (numOfTokens == 3) {
                         table.setQueue.add(id);
+                        dealer.notifyDealer();
                         try {
                             synchronized (obj) {
                                 obj.wait();
                             }
                         } catch (InterruptedException e) {
+                            release();
                         }
                     }
                 }
@@ -150,14 +156,15 @@ public class Player implements Runnable {
         // note: this is a very, very smart AI (!)
         aiThread = new Thread(() -> {
             env.logger.log(Level.INFO, "Thread " + Thread.currentThread().getName() + " starting.");
+            Random simulator = new Random();
             while (!terminate) {
-                // TODO implement player key press simulator
-                try {
-                    synchronized (this) {
-                        wait();
-                    }
-                } catch (InterruptedException ignored) {
-                }
+                keyPressed(simulator.nextInt(env.config.tableSize));
+                //try {
+                  //  synchronized (this) {
+                //        wait();
+                  //  }
+                //} catch (InterruptedException ignored) {
+               // }
             }
             env.logger.log(Level.INFO, "Thread " + Thread.currentThread().getName() + " terminated.");
         }, "computer-" + id);
@@ -192,12 +199,11 @@ public class Player implements Runnable {
         int ignored = table.countCards(); // this part is just for demonstration in the unit tests
         env.ui.setScore(id, score);
         try {
-            env.ui.setFreeze(id, 1000);
-            playerThread.sleep(1000);
+            env.ui.setFreeze(id, env.config.pointFreezeMillis);
+            playerThread.sleep(env.config.pointFreezeMillis);
             env.ui.setFreeze(id, 0);
         } catch (InterruptedException e) {
         }
-        ;
         keyQueue.clear();
 
     }
@@ -206,7 +212,8 @@ public class Player implements Runnable {
      * Penalize a player and perform other related actions.
      */
     public void penalty() {
-        for (int i = 3; i > 0; i--) {
+        int seconds = (int) (env.config.penaltyFreezeMillis / 1000);
+        for (int i = seconds; i > 0; i--) {
             env.ui.setFreeze(id, i * 1000);
             try {
                 playerThread.sleep(1000);
